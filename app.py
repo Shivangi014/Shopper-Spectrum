@@ -863,17 +863,12 @@ elif menu == "🛍 Product Recommendation":
     # Recommendation Function
     # ----------------------------------------
 
-    def recommend_products(product_name, n=5):
+    def recommend_products(product_name):
 
-        scores = similarity.loc[product_name]
+    if product_name not in recommendations:
+        return []
 
-        scores = scores.sort_values(
-            ascending=False
-        )
-
-        scores = scores.iloc[1:n+1]
-
-        return scores
+    return recommendations[product_name]
 
     # ----------------------------------------
     # Recommend Button
@@ -884,21 +879,24 @@ elif menu == "🛍 Product Recommendation":
         use_container_width=True
     ):
 
-        recommendations = recommend_products(
-            product,
-            top_n
-        )
+        recommended_products = recommend_products(product)
 
-        st.success(
-            f"Top {top_n} products similar to **{product}**"
-        )
+for i, item in enumerate(recommended_products, start=1):
 
-        st.divider()
+    with st.container(border=True):
 
-        for i, (item, score) in enumerate(
-            recommendations.items(),
-            start=1
-        ):
+        c1, c2 = st.columns([4,1])
+
+        with c1:
+            st.markdown(
+                f"### {i}. {item['Product']}"
+            )
+
+        with c2:
+            st.metric(
+                "Score",
+                f"{item['Score']:.2f}"
+            )
 
             with st.container(border=True):
 
