@@ -831,7 +831,7 @@ elif menu == "🛍 Product Recommendation":
 
     try:
 
-        similarity = joblib.load("models/similarity.pkl")
+        recommendations = joblib.load("models/recommendations.pkl")
 
     except Exception as e:
 
