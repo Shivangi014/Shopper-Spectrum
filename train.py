@@ -24,7 +24,7 @@ os.makedirs("models", exist_ok=True)
 
 print("Loading dataset...")
 
-df = pd.read_csv("online_retail.csv", encoding="ISO-8859-1")
+df = pd.read_csv("online_retail (Recovered).xlsb", encoding="ISO-8859-1")
 
 print(f"Dataset Shape : {df.shape}")
 
