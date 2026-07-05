@@ -829,16 +829,16 @@ elif menu == "🛍 Product Recommendation":
 
     st.divider()
 
-    try:
+    # ----------------------------------------
+    # Load Recommendation Dictionary
+    # ----------------------------------------
 
+    try:
         recommendations = joblib.load("models/recommendations.pkl")
 
     except Exception as e:
-
-        st.error("❌ similarity.pkl not found. Run train.py first.")
-
+        st.error("❌ recommendations.pkl not found. Run train.py first.")
         st.code(str(e))
-
         st.stop()
 
     # ----------------------------------------
@@ -853,21 +853,22 @@ elif menu == "🛍 Product Recommendation":
     )
 
     top_n = st.slider(
-       "Number of Recommendations",
+        "Number of Recommendations",
         min_value=1,
-        max_value=5,      # Only 5 recommendations are stored
+        max_value=5,
         value=5
     )
 
     # ----------------------------------------
     # Recommendation Function
     # ----------------------------------------
-def recommend_products(product_name):
 
-    if product_name not in recommendations:
-        return []
+    def recommend_products(product_name, n=5):
 
-    return recommendations[product_name]
+        if product_name not in recommendations:
+            return []
+
+        return recommendations[product_name][:n]
 
     # ----------------------------------------
     # Recommend Button
@@ -877,65 +878,70 @@ def recommend_products(product_name):
         "Get Recommendations",
         use_container_width=True
     ):
- 
-      recommended_products = recommend_products(product)
 
-for i, item in enumerate(recommended_products, start=1):
+        recommended_products = recommend_products(
+            product,
+            top_n
+        )
 
-    with st.container(border=True):
-
-        c1, c2 = st.columns([4,1])
-
-        with c1:
-            st.markdown(
-                f"### {i}. {item['Product']}"
-            )
-
-        with c2:
-            st.metric(
-                "Score",
-                f"{item['Score']:.2f}"
-            )
-
-            with st.container(border=True):
-
-                c1, c2 = st.columns([4,1])
-
-                with c1:
-
-                    st.markdown(
-                        f"### {i}. {item}"
-                    )
-
-                with c2:
-
-                    st.metric(
-                        "Similarity",
-                        f"{score:.2f}"
-                    )
+        st.success(
+            f"Top {top_n} recommendations for **{product}**"
+        )
 
         st.divider()
 
-        # Similarity Chart
+        scores = []
+        names = []
+
+        for i, item in enumerate(recommended_products, start=1):
+
+            with st.container(border=True):
+
+                c1, c2 = st.columns([4, 1])
+
+                with c1:
+                    st.markdown(
+                        f"### {i}. {item['Product']}"
+                    )
+
+                with c2:
+                    st.metric(
+                        "Score",
+                        f"{item['Score']:.3f}"
+                    )
+
+            names.append(item["Product"])
+            scores.append(item["Score"])
+
+        st.divider()
 
         fig = px.bar(
-            x=recommendations.values,
-            y=recommendations.index,
+            x=scores,
+            y=names,
             orientation="h",
-            text=np.round(
-                recommendations.values,
-                2
-            ),
+            text=np.round(scores, 3),
             labels={
-                "x":"Similarity Score",
-                "y":"Products"
+                "x": "Similarity Score",
+                "y": "Product"
             },
-            title="Recommended Products"
+            title="Top Recommended Products"
         )
 
         st.plotly_chart(
             fig,
             use_container_width=True
+        )
+
+        csv = pd.DataFrame({
+            "Product": names,
+            "Similarity Score": scores
+        })
+
+        st.download_button(
+            "⬇ Download Recommendations",
+            csv.to_csv(index=False),
+            file_name="recommendations.csv",
+            mime="text/csv"
         )
 
         
