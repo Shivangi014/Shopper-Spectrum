@@ -878,7 +878,7 @@ def recommend_products(product_name):
         use_container_width=True
     ):
 
-    recommended_products = recommend_products(product)
+     recommended_products = recommend_products(product)
 
 for i, item in enumerate(recommended_products, start=1):
 
