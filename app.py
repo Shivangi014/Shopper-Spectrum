@@ -868,7 +868,7 @@ elif menu == "🛍 Product Recommendation":
       if product_name not in recommendations:
         return []
 
-    return recommendations[product_name]
+      return recommendations[product_name]
 
     # ----------------------------------------
     # Recommend Button
