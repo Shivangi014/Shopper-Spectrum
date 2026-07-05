@@ -45,7 +45,7 @@ def load_data():
      "online_retail (Recovered).xlsb",
      engine="pyxlsb"
      )
-
+    
     df = df.dropna(subset=["CustomerID"])
     df = df[~df["InvoiceNo"].astype(str).str.startswith("C")]
     df = df[df["Quantity"] > 0]
@@ -78,7 +78,7 @@ menu = st.sidebar.radio(
         "👥 Customer Segmentation",
         "🎯 Predict Segment",
         "🛍 Product Recommendation",
-        "ℹ About"
+        
     ]
 )
 # ==========================================================
@@ -215,34 +215,6 @@ if menu == "🏠 Home":
 
     st.divider()
 
-    # -------------------------------
-    # Monthly Revenue Trend
-    # -------------------------------
-
-    st.subheader("📈 Monthly Revenue Trend")
-
-    monthly = (
-        df
-        .set_index("InvoiceDate")
-        .resample("M")["TotalAmount"]
-        .sum()
-        .reset_index()
-    )
-
-    fig = px.line(
-        monthly,
-        x="InvoiceDate",
-        y="TotalAmount",
-        markers=True,
-        title="Monthly Revenue"
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.divider()
 
     # -------------------------------
     # Top Products
@@ -339,27 +311,7 @@ elif menu == "📊 EDA Dashboard":
 
     st.divider()
 
-    # ---------------------------------
-    # Missing Values
-    # ---------------------------------
-
-    st.subheader("Missing Values")
-
-    missing = filtered_df.isnull().sum().reset_index()
-    missing.columns = ["Column", "Missing Values"]
-
-    fig = px.bar(
-        missing,
-        x="Column",
-        y="Missing Values",
-        color="Missing Values",
-        text_auto=True
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.divider()
-
+    
     # ---------------------------------
     # Top Countries
     # ---------------------------------
@@ -412,54 +364,6 @@ elif menu == "📊 EDA Dashboard":
 
     st.divider()
 
-    # ---------------------------------
-    # Monthly Revenue
-    # ---------------------------------
-
-    st.subheader("📈 Monthly Revenue")
-
-    monthly = (
-        filtered_df
-        .set_index("InvoiceDate")
-        .resample("M")["TotalAmount"]
-        .sum()
-        .reset_index()
-    )
-
-    fig = px.line(
-        monthly,
-        x="InvoiceDate",
-        y="TotalAmount",
-        markers=True
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.divider()
-
-    # ---------------------------------
-    # Daily Revenue
-    # ---------------------------------
-
-    st.subheader("📅 Daily Revenue")
-
-    daily = (
-        filtered_df
-        .set_index("InvoiceDate")
-        .resample("D")["TotalAmount"]
-        .sum()
-        .reset_index()
-    )
-
-    fig = px.area(
-        daily,
-        x="InvoiceDate",
-        y="TotalAmount"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.divider()
 
     # ---------------------------------
     # Revenue Distribution
@@ -554,74 +458,6 @@ elif menu == "📊 EDA Dashboard":
 
     st.divider()
 
-    # ---------------------------------
-    # Purchase Hour Analysis
-    # ---------------------------------
-
-    filtered_df["Hour"] = filtered_df["InvoiceDate"].dt.hour
-
-    hour = (
-        filtered_df.groupby("Hour")
-        .size()
-        .reset_index(name="Transactions")
-    )
-
-    st.subheader("🕒 Purchase Hour Analysis")
-
-    fig = px.line(
-        hour,
-        x="Hour",
-        y="Transactions",
-        markers=True
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    st.divider()
-
-    # ---------------------------------
-    # Weekday Analysis
-    # ---------------------------------
-
-    filtered_df["Weekday"] = (
-        filtered_df["InvoiceDate"]
-        .dt.day_name()
-    )
-
-    weekday = (
-        filtered_df.groupby("Weekday")
-        .size()
-        .reset_index(name="Transactions")
-    )
-
-    order = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
-    ]
-
-    weekday["Weekday"] = pd.Categorical(
-        weekday["Weekday"],
-        categories=order,
-        ordered=True
-    )
-
-    weekday = weekday.sort_values("Weekday")
-
-    st.subheader("📆 Transactions by Weekday")
-
-    fig = px.bar(
-        weekday,
-        x="Weekday",
-        y="Transactions",
-        color="Transactions"
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
 # ==========================================================
 # CUSTOMER SEGMENTATION
 # ==========================================================
@@ -841,23 +677,6 @@ elif menu == "👥 Customer Segmentation":
 
     st.divider()
 
-    # ---------------------------------
-    # Download RFM
-    # ---------------------------------
-
-    csv = rfm.to_csv(index=False)
-
-    st.download_button(
-
-        "⬇ Download RFM Dataset",
-
-        csv,
-
-        file_name="rfm_dataset.csv",
-
-        mime="text/csv"
-
-    )
 # ==========================================================
 # PREDICT CUSTOMER SEGMENT
 # ==========================================================
@@ -1122,18 +941,4 @@ elif menu == "🛍 Product Recommendation":
             use_container_width=True
         )
 
-        # Download CSV
-
-        csv = recommendations.reset_index()
-
-        csv.columns = [
-            "Product",
-            "Similarity"
-        ]
-
-        st.download_button(
-            "⬇ Download Recommendations",
-            csv.to_csv(index=False),
-            file_name="recommendations.csv",
-            mime="text/csv"
-        )
+        
