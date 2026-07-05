@@ -865,7 +865,7 @@ elif menu == "🛍 Product Recommendation":
 
     def recommend_products(product_name):
 
-    if product_name not in recommendations:
+      if product_name not in recommendations:
         return []
 
     return recommendations[product_name]
