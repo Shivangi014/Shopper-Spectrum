@@ -41,7 +41,10 @@ h1,h2,h3{
 # ----------------------------
 @st.cache_data
 def load_data():
-    df = pd.read_csv("online_retail (Recovered).xlsb encoding="ISO-8859-1"")
+    df = pd.read_excel(
+     "online_retail (Recovered).xlsb",
+     engine="pyxlsb"
+     )
 
     df = df.dropna(subset=["CustomerID"])
     df = df[~df["InvoiceNo"].astype(str).str.startswith("C")]
