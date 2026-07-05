@@ -862,13 +862,12 @@ top_n = st.slider(
     # ----------------------------------------
     # Recommendation Function
     # ----------------------------------------
+def recommend_products(product_name):
 
-    def recommend_products(product_name):
-
-      if product_name not in recommendations:
+    if product_name not in recommendations:
         return []
 
-      return recommendations[product_name]
+    return recommendations[product_name]
 
     # ----------------------------------------
     # Recommend Button
