@@ -937,11 +937,5 @@ elif menu == "🛍 Product Recommendation":
             "Similarity Score": scores
         })
 
-        st.download_button(
-            "⬇ Download Recommendations",
-            csv.to_csv(index=False),
-            file_name="recommendations.csv",
-            mime="text/csv"
-        )
-
+       
         
