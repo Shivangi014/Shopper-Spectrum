@@ -320,6 +320,12 @@ print("Computing Cosine Similarity...")
 
 item_matrix = customer_product_matrix.T
 
+# ==========================================================
+# ITEM-ITEM SIMILARITY
+# ==========================================================
+
+print("Calculating cosine similarity...")
+
 similarity = cosine_similarity(item_matrix)
 
 similarity_df = pd.DataFrame(
@@ -328,21 +334,35 @@ similarity_df = pd.DataFrame(
     columns=item_matrix.index
 )
 
-# ==========================================================
-# SAVE MODEL
-# ==========================================================
+print("Creating recommendation dictionary...")
+
+recommendations = {}
+
+for product in similarity_df.index:
+
+    top_products = (
+        similarity_df.loc[product]
+        .sort_values(ascending=False)
+        .iloc[1:6]
+    )
+
+    recommendations[product] = [
+        {
+            "Product": p,
+            "Score": float(score)
+        }
+        for p, score in zip(
+            top_products.index,
+            top_products.values
+        )
+    ]
 
 joblib.dump(
-    similarity_df,
-    "models/similarity.pkl"
+    recommendations,
+    "models/recommendations.pkl"
 )
 
-joblib.dump(
-    similarity_df.index.tolist(),
-    "models/product_list.pkl"
-)
-
-print("Similarity Matrix Saved.")
+print("recommendations.pkl saved successfully.")
 
 # ==========================================================
 # SAMPLE RECOMMENDATION
