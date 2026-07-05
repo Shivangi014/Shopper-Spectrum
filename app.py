@@ -845,19 +845,19 @@ elif menu == "🛍 Product Recommendation":
     # Product Selection
     # ----------------------------------------
 
-    product_list = sorted(similarity.index.tolist())
+product_list = sorted(recommendations.keys())
 
-    product = st.selectbox(
-        "Select a Product",
-        product_list
-    )
+product = st.selectbox(
+    "Select a Product",
+    product_list
+)
 
-    top_n = st.slider(
-        "Number of Recommendations",
-        min_value=1,
-        max_value=10,
-        value=5
-    )
+top_n = st.slider(
+    "Number of Recommendations",
+    min_value=1,
+    max_value=5,      # Only 5 recommendations are stored
+    value=5
+)
 
     # ----------------------------------------
     # Recommendation Function
@@ -879,7 +879,7 @@ elif menu == "🛍 Product Recommendation":
         use_container_width=True
     ):
 
-        recommended_products = recommend_products(product)
+    recommended_products = recommend_products(product)
 
 for i, item in enumerate(recommended_products, start=1):
 
